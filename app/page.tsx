@@ -22,7 +22,7 @@ export default function HomePage() {
       {/* Hero Section */}
       <section className="relative h-[70vh] md:h-[85vh] w-full">
         <Image
-          src={heroImage1 || "/placeholder.svg"}
+          src={heroImage1}
           alt="Không gian sang trọng tại Siam Siam"
           fill
           className="object-cover brightness-[0.6]"
@@ -111,7 +111,7 @@ export default function HomePage() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="relative aspect-[4/5] rounded-lg overflow-hidden shadow-xl">
               <Image
-                src={chefImage || "/placeholder.svg"}
+                src={chefImage}
                 alt="Bếp trưởng Putthasorn Loi của nhà hàng Siam Siam"
                 fill
                 className="object-cover"
@@ -177,7 +177,7 @@ export default function HomePage() {
           <div className="grid md:grid-cols-2 gap-6">
             <div className="relative aspect-video rounded-lg overflow-hidden shadow-xl">
               <Image
-                src={spaceImage1 || "/placeholder.svg"}
+                src={spaceImage1}
                 alt="Không gian nhà hàng Siam Siam 1"
                 fill
                 className="object-cover"
@@ -185,7 +185,7 @@ export default function HomePage() {
             </div>
             <div className="relative aspect-video rounded-lg overflow-hidden shadow-xl">
               <Image
-                src={spaceImage2 || "/placeholder.svg"}
+                src={spaceImage2}
                 alt="Không gian nhà hàng Siam Siam 2"
                 fill
                 className="object-cover"
@@ -235,7 +235,7 @@ export default function HomePage() {
                 className="overflow-hidden shadow-lg hover:shadow-xl transition-shadow border border-brand-gold/30 rounded-lg bg-white"
               >
                 <div className="relative aspect-[4/3]">
-                  <Image src={item.image || "/placeholder.svg"} alt={item.title} fill className="object-cover" />
+                  <Image src={item.image} alt={item.title} fill className="object-cover" />
                 </div>
                 <div className="p-6">
                   <h3 className="font-sans text-2xl mb-2 text-brand-gold font-semibold">{item.title}</h3>

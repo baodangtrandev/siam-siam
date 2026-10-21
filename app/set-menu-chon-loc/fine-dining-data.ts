@@ -12,7 +12,6 @@ export interface FineDiningSet {
   signature: string
   chefNote: string
   dishes: FineDiningDish[]
-  backgroundImage: string
   price?: number
 }
 
@@ -22,7 +21,6 @@ export const fineDiningSets: FineDiningSet[] = [
     title: "SET HOÀNG GIA",
     subtitle: "Bữa tiệc sắc vị đặc biệt - Tinh hoa ẩm thực hoàng gia Thái Lan",
     signature: "Hương vị quý phái, giá trị vượt trội",
-    backgroundImage: "/images/set-menu/set-3-background.jpeg",
     price: 2399000,
     chefNote:
       "Set menu Hoàng Gia là biểu tượng của sự tinh tế và đẳng cấp. Cua gạch Cà Mau nâng tầm với cà ri đỏ truyền thống, Hải sản lạnh sốt Siam Siam thể hiện bí quyết hoàng gia. Chả cua, Salad cá hồi thảo mộc, và Gỏi tôm bưởi khép lại với sự cân bằng hoàn hảo giữa các vị - một trải nghiệm ẩm thực không thể quên.",
@@ -69,7 +67,6 @@ export const fineDiningSets: FineDiningSet[] = [
     title: "SET 2A",
     subtitle: "Hành trình vị giác chua cay đặc trưng",
     signature: "Vị Thái Signature: Chua cay",
-    backgroundImage: "/images/set-menu/set-1-background.jpeg",
     chefNote:
       "Som Tam khai vị từ Isan hòa quyện với Tom Kha Gai dịu nhẹ miền Trung, dẫn lối đến Tom Saeng Saeb chua cay bùng nổ. Pad Thai cân bằng vị giác trước khi Cá Hồi Sốt Siam khép lại bằng tinh túy hoàng gia - một hành trình từ dân gian đến cung đình.",
     dishes: [
@@ -115,7 +112,6 @@ export const fineDiningSets: FineDiningSet[] = [
     title: "SET 2B",
     subtitle: "Sự giao thoa tinh tế giữa truyền thống và hiện đại",
     signature: "Vị Thái Fusion, hương vị trung hoà",
-    backgroundImage: "/images/set-menu/set-2-background.jpeg",
     chefNote:
       "Bào Ngư Truffle thể hiện đỉnh cao kỹ thuật, kết hợp cùng Cà Ri Cua truyền thống tạo nên sự cân bằng giữa Đông Tây. Som Tam Ba Khía mở màn, Cơm Chiên Thơm thanh thoát, Tom Yum cổ điển khép lại - tinh hoa fusion trong từng chi tiết.",
     dishes: [
@@ -159,7 +155,6 @@ export const fineDiningSets: FineDiningSet[] = [
     title: "SET 4A",
     subtitle: "Bữa tiệc đa tầng hương vị cho nhóm bạn",
     signature: "Trải nghiệm ẩm thực toàn diện",
-    backgroundImage: "/images/set-menu/set-3-background.jpeg",
     chefNote:
       "Tom Yum kinh điển khởi đầu, Tháp Sườn Chua Cay Isan làm trung tâm, Thịt Cua Chung Cư sáng tạo tạo điểm nhấn. Bò Nướng Siam và Cơm Chiên Xe Lửa hoàn thiện bức tranh ẩm thực đa tầng - từ truyền thống đến hiện đại.",
     dishes: [
@@ -212,7 +207,6 @@ export const fineDiningSets: FineDiningSet[] = [
     title: "SET 4B",
     subtitle: "Tinh hoa hải sản và thịt nướng cao cấp",
     signature: "Sự kết hợp hoàn hảo giữa đất và biển",
-    backgroundImage: "/images/set-menu/set-1-background.jpeg",
     chefNote:
       "Cá Hồi Mắm Nêm khai phá vị giác, Cua Lột Sốt Trứng Muối thể hiện kỹ thuật hoàng gia, Sò Điệp X.O mang đẳng cấp quốc tế. Lẩu Tom Yum trung tâm, Cá Chém Hấp khép lại - tinh hoa hải sản từ vùng biển Thái Lan.",
     dishes: [
@@ -265,7 +259,6 @@ export const fineDiningSets: FineDiningSet[] = [
     title: "SET COMBO B",
     subtitle: "Dành cho 6 người - Tiệc gia đình hoàn hảo",
     signature: "Sự hòa quyện của truyền thống và hiện đại",
-    backgroundImage: "/images/set-menu/set-2-background.jpeg",
     chefNote:
       "Lẩu Tom Yum trung tâm theo truyền thống gia đình Thái, Cua Lột và Cá Hồi nâng tầm đẳng cấp. Cánh Gà đa phong cách, Pad Thai quen thuộc - sự hòa quyện giữa tinh hoa hoàng gia và không khí gia đình ấm cúng.",
     dishes: [

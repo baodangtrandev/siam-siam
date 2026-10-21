@@ -48,7 +48,7 @@ export default function SpacePage() {
           {galleryImages.map((image, index) => (
             <div key={index} className="relative aspect-square rounded-lg overflow-hidden shadow-xl group">
               <Image
-                src={image.src || "/placeholder.svg"}
+                src={image.src}
                 alt={image.alt}
                 fill
                 className="object-cover group-hover:scale-105 transition-transform duration-300"

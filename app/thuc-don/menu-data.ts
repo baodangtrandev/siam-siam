@@ -3,7 +3,6 @@ export interface MenuItem {
   name: string
   price: string
   description?: string
-  image?: string // Optional image for featured items
 }
 
 export interface MenuCategory {
@@ -11,8 +10,6 @@ export interface MenuCategory {
   title: string
   items: MenuItem[]
 }
-
-const dishImagesPath = "/images/dishes"
 
 export const menuData: MenuCategory[] = [
   {
@@ -26,11 +23,7 @@ export const menuData: MenuCategory[] = [
       { name: "Gỏi Hàu Sữa", price: "155.000" },
       { name: "Gỏi Sò Huyết", price: "235.000" },
       { name: "Gỏi Đu Đủ Cá Hồi Mắm Nêm Thái", price: "215.000" },
-      {
-        name: "Gỏi Miến Hải Sản",
-        price: "215.000",
-        image: `${dishImagesPath}/yum-woon-sen-seafood-salad.jpg`,
-      }, // Food 5
+      { name: "Gỏi Miến Hải Sản", price: "215.000" },
     ],
   },
   {
@@ -51,18 +44,14 @@ export const menuData: MenuCategory[] = [
       { name: "Cá Chẽm Fillet Chiên Tỏi", price: "385.000" },
       { name: "Cá Chẽm Fillet Hấp Chanh", price: "385.000" },
       { name: "Cá Chẽm Fillet Hấp Xì Dầu", price: "385.000" },
-      { name: "Thịt Cua Xào Cà Ri", price: "315.000", image: `${dishImagesPath}/crab-curry.jpg` }, // Food 8
+      { name: "Thịt Cua Xào Cà Ri", price: "315.000" },
       { name: "Mai Cua Siam Siam", price: "215.000" },
       { name: "Cua Lột Sốt Trứng Muối", price: "455.000" },
       { name: "Cua Lột Chiên Tỏi", price: "455.000" },
-      { name: "Cua Xào Cà Ri", price: "Theo thời giá", image: `${dishImagesPath}/crab-curry.jpg` }, // Food 8
+      { name: "Cua Xào Cà Ri", price: "Theo thời giá" },
       { name: "Cua Rang Me", price: "Theo thời giá" },
       { name: "Cua Sốt Trứng Muối", price: "Theo thời giá" },
-      {
-        name: 'Tháp Sườn Núi "Ko Tapu" Chua Cay',
-        price: "To: 435.000<br>Nhỏ: 355.000",
-        image: `${dishImagesPath}/thai-spicy-meat-skewers.jpg`,
-      }, // Image "Food 1" has this
+      { name: 'Tháp Sườn Núi "Ko Tapu" Chua Cay', price: "To: 435.000<br>Nhỏ: 355.000" },
     ],
   },
   {
@@ -88,7 +77,7 @@ export const menuData: MenuCategory[] = [
     items: [
       { name: "Soup Tomyum", price: "185.000" },
       { name: "Soup Tomyum Sa Tế", price: "185.000" },
-      { name: "Soup Tomyum Sườn Non", price: "185.000", image: `${dishImagesPath}/thai-green-curry-noodles.jpg` }, // Image "Food 1" has this
+      { name: "Soup Tomyum Sườn Non", price: "185.000" },
       { name: "Soup Tomyum Nước Trong", price: "185.000" },
       { name: "Soup Gà Nước Dừa", price: "185.000" },
       { name: "Soup Tomyum Gà Lá Me Non", price: "185.000" },
@@ -138,16 +127,16 @@ export const menuData: MenuCategory[] = [
     id: "com-mi",
     title: "CƠM & MÌ",
     items: [
-      { name: "Cơm Chiên Trái Thơm", price: "215.000", image: `${dishImagesPath}/thai-green-curry-noodles.jpg` }, // Image "Food 1" has this
+      { name: "Cơm Chiên Trái Thơm", price: "215.000" },
       { name: "Xôi Nếp", price: "25.000" },
       { name: "Cơm Trắng", price: "25.000" },
       { name: "Cơm Chiên Xe Lửa", price: "165.000" },
       { name: "Cơm Chiên Hải Sản", price: "195.000" },
       { name: "Cơm Cháy Sốt Thịt", price: "155.000" },
       { name: "Cơm Mắm Ruốc", price: "185.000" },
-      { name: "Pad Thái Tôm", price: "195.000", image: `${dishImagesPath}/pad-thai-shrimp.jpg` }, // Food 6
+      { name: "Pad Thái Tôm", price: "195.000" },
       { name: "Pad Thái Bọc Trứng", price: "215.000" },
-      { name: "Ma Ma Tomyum", price: "195.000", image: `${dishImagesPath}/tom-yum-mama-noodles.jpg` }, // Food 7
+      { name: "Ma Ma Tomyum", price: "195.000" },
       { name: "Mì Chiên Giòn Hải Sản", price: "215.000" },
       { name: "Hủ Tiếu Xào Hắc Xì Dầu Hải Sản", price: "215.000" },
     ],
@@ -156,11 +145,7 @@ export const menuData: MenuCategory[] = [
     id: "menu-hoang-gia",
     title: "MENU HOÀNG GIA",
     items: [
-      {
-        name: "Miang Kham Hoa Sen",
-        price: "385.000",
-        image: `${dishImagesPath}/miang-kham-lotus-petals.jpg`,
-      }, // Food 4
+      { name: "Miang Kham Hoa Sen", price: "385.000" },
       { name: "Rau Củ Chấm Mắm Thái", price: "175.000" },
       { name: "Rau Củ Chấm Đậu Tương Ba Khía", price: "155.000" },
       { name: "Bò Wagyu Kiểu Thái (Tái/Chín)", price: "395.000" },
@@ -169,16 +154,8 @@ export const menuData: MenuCategory[] = [
       { name: "Cua Hoàng Đế Chiên Tỏi", price: "Theo Thời Giá" },
       { name: "Cua Hoàng Đế Sốt Trứng Muối", price: "Theo Thời Giá" },
       { name: "Cua Hoàng Đế Sốt Tiêu Đen", price: "Theo Thời Giá" },
-      {
-        name: "Gỏi Tôm Càng Với Trứng Lòng Đào",
-        price: "495.000",
-        image: `${dishImagesPath}/grilled-river-prawn-with-eggs.jpg`,
-      }, // Food 3
-      {
-        name: "Tôm Càng Nướng Chấm Sốt Hải Sản Xanh",
-        price: "495.000",
-        image: `${dishImagesPath}/grilled-river-prawn-with-eggs.jpg`,
-      }, // Food 3
+      { name: "Gỏi Tôm Càng Với Trứng Lòng Đào", price: "495.000" },
+      { name: "Tôm Càng Nướng Chấm Sốt Hải Sản Xanh", price: "495.000" },
       { name: "Tôm Càng Sốt Cà Ri Xanh", price: "495.000" },
       { name: "Spaghetti Sốt Tomyum", price: "475.000" },
       { name: "Miến Hấp Bào Ngư, Hải Sâm", price: "955.000" },
@@ -187,7 +164,7 @@ export const menuData: MenuCategory[] = [
       { name: 'Thịt Cua "Chung Cư" Sốt Cà Ri Xanh', price: "315.000" },
       { name: "Vẹm Xanh Newzealand Sốt Cà Ri Đỏ", price: "215.000" },
       { name: "Vịt Cà Ri Xanh", price: "185.000" },
-      { name: "Cá Hồi Sốt Siam Siam", price: "255.000", image: `${dishImagesPath}/salmon-skewers.jpg` }, // Food 2
+      { name: "Cá Hồi Sốt Siam Siam", price: "255.000" },
       { name: "Cua Gạch Cà Mau Sốt Cari Đỏ", price: "945.000" },
       { name: "Hải Sản Lạnh Sốt Siam Siam", price: "615.000" },
       { name: "Chả Cua", price: "299.000" },

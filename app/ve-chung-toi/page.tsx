@@ -25,7 +25,7 @@ export default function AboutUsPage() {
           <div className="grid md:grid-cols-2 gap-6 my-8">
             <div className="relative aspect-video rounded-lg overflow-hidden shadow-md">
               <Image
-                src={storyImage1 || "/placeholder.svg"}
+                src={storyImage1}
                 alt="Kiến trúc mái vòm độc đáo và không gian sang trọng tại Siam Siam"
                 fill
                 className="object-cover"
@@ -33,7 +33,7 @@ export default function AboutUsPage() {
             </div>
             <div className="relative aspect-video rounded-lg overflow-hidden shadow-md">
               <Image
-                src={storyImage2 || "/placeholder.svg"}
+                src={storyImage2}
                 alt="Thực khách thưởng thức ẩm thực bên cửa sổ lớn nhìn ra phố phường"
                 fill
                 className="object-cover"

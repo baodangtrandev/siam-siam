@@ -23,7 +23,7 @@ export default function ChefPage() {
         <div className="grid md:grid-cols-5 gap-8 lg:gap-12 items-start">
           <div className="md:col-span-2 relative aspect-[4/5] rounded-lg overflow-hidden shadow-xl">
             <Image
-              src={chefPortrait || "/placeholder.svg"}
+              src={chefPortrait}
               alt="Bếp trưởng Putthasorn Loi của nhà hàng Siam Siam"
               fill
               className="object-cover"
@@ -61,7 +61,7 @@ export default function ChefPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
               <div className="relative aspect-video rounded-lg overflow-hidden shadow-md">
                 <Image
-                  src={chefAction1 || "/placeholder.svg"}
+                  src={chefAction1}
                   alt="Bếp trưởng Putthasorn Loi đang tập trung chế biến món ăn"
                   fill
                   className="object-cover"
@@ -69,7 +69,7 @@ export default function ChefPage() {
               </div>
               <div className="relative aspect-video rounded-lg overflow-hidden shadow-md">
                 <Image
-                  src={chefAction2 || "/placeholder.svg"}
+                  src={chefAction2}
                   alt="Chân dung Bếp trưởng Putthasorn Loi tại Siam Siam"
                   fill
                   className="object-cover"
