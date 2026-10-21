@@ -25,22 +25,22 @@ export default function Footer() {
           <h3 className="font-sans font-semibold text-xl mb-4 text-brand-gold">Liên Kết Nhanh</h3>
           <ul className="space-y-2 text-sm">
             <li>
-              <Link href="/ve-chung-toi" className="hover:text-brand-gold/80">
+              <Link href="/about" className="hover:text-brand-gold/80">
                 Về Siam Siam
               </Link>
             </li>
             <li>
-              <Link href="/bep-truong" className="hover:text-brand-gold/80">
+              <Link href="/chef" className="hover:text-brand-gold/80">
                 Bếp Trưởng
               </Link>
             </li>
             <li>
-              <Link href="/set-menu-chon-loc" className="hover:text-brand-gold/80">
+              <Link href="/set-menu" className="hover:text-brand-gold/80">
                 Set Menu Chọn Lọc
               </Link>
             </li>
             <li>
-              <Link href="/thuc-don" className="hover:text-brand-gold/80">
+              <Link href="/menu" className="hover:text-brand-gold/80">
                 Thực Đơn
               </Link>
             </li>
@@ -50,7 +50,7 @@ export default function Footer() {
               </a>
             </li>
             <li>
-              <Link href="/lien-he" className="hover:text-brand-gold/80">
+              <Link href="/contact" className="hover:text-brand-gold/80">
                 Liên Hệ
               </Link>
             </li>

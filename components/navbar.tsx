@@ -18,12 +18,12 @@ export default function Navbar() {
 
   const navLinks = [
     { href: "/", label: "Trang chủ", icon: <Home className="h-4 w-4" /> },
-    { href: "/ve-chung-toi", label: "Về Siam Siam", icon: <ChefHat className="h-4 w-4" /> },
-    { href: "/bep-truong", label: "Bếp Trưởng", icon: <ChefHat className="h-4 w-4" /> },
-    { href: "/set-menu-chon-loc", label: "Set Menu Chọn Lọc", icon: <ListChecks className="h-4 w-4" /> },
-    { href: "/khong-gian", label: "Không Gian", icon: <ImageIcon className="h-4 w-4" /> },
-    { href: "/thuc-don", label: "Full-Menu", icon: <Utensils className="h-4 w-4" /> },
-    { href: "/lien-he", label: "Liên Hệ", icon: <Phone className="h-4 w-4" /> },
+    { href: "/about", label: "Về Siam Siam", icon: <ChefHat className="h-4 w-4" /> },
+    { href: "/chef", label: "Bếp Trưởng", icon: <ChefHat className="h-4 w-4" /> },
+    { href: "/set-menu", label: "Set Menu Chọn Lọc", icon: <ListChecks className="h-4 w-4" /> },
+    { href: "/space", label: "Không Gian", icon: <ImageIcon className="h-4 w-4" /> },
+    { href: "/menu", label: "Full-Menu", icon: <Utensils className="h-4 w-4" /> },
+    { href: "/contact", label: "Liên Hệ", icon: <Phone className="h-4 w-4" /> },
   ]
 
   return (

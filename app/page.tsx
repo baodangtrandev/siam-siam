@@ -36,7 +36,7 @@ export default function HomePage() {
           </p>
           <div className="flex gap-4">
             <Link
-              href="/set-menu-chon-loc"
+              href="/set-menu"
               className="inline-block bg-brand-gold hover:bg-brand-gold/90 text-brand-green font-semibold px-8 py-6 text-lg rounded-md transition-colors"
             >
               Khám Phá Set Menu
@@ -95,7 +95,7 @@ export default function HomePage() {
               </p>
 
               <Link
-                href="/thuc-don"
+                href="/menu"
                 className="inline-block bg-brand-gold hover:bg-brand-gold/90 text-brand-green font-semibold px-6 py-3 rounded-md transition-colors"
               >
                 Xem Món Này Trong Menu
@@ -132,7 +132,7 @@ export default function HomePage() {
                 thực độc đáo nhất cho thực khách.”
               </p>
               <Link
-                href="/bep-truong"
+                href="/chef"
                 className="inline-block bg-brand-gold hover:bg-brand-gold/90 text-brand-green font-semibold px-6 py-3 rounded-md transition-colors"
               >
                 Tìm Hiểu Thêm Về Bếp Trưởng
@@ -155,7 +155,7 @@ export default function HomePage() {
             và sự tài hoa của đội ngũ đầu bếp để tạo nên những tuyệt tác lay động mọi giác quan.
           </p>
           <Link
-            href="/ve-chung-toi"
+            href="/about"
             className="inline-block border-2 border-brand-gold text-brand-gold hover:bg-brand-gold hover:text-brand-green font-semibold bg-transparent px-6 py-3 rounded-md transition-colors"
           >
             Khám Phá Câu Chuyện
@@ -194,7 +194,7 @@ export default function HomePage() {
           </div>
           <div className="text-center mt-12">
             <Link
-              href="/khong-gian"
+              href="/space"
               className="inline-block border-2 border-brand-gold text-brand-gold hover:bg-brand-gold hover:text-brand-green font-semibold bg-transparent px-6 py-3 rounded-md transition-colors"
             >
               Xem Thêm Hình Ảnh
@@ -246,7 +246,7 @@ export default function HomePage() {
           </div>
           <div className="text-center mt-12">
             <Link
-              href="/thuc-don"
+              href="/menu"
               className="inline-block bg-brand-gold hover:bg-brand-gold/90 text-brand-green font-semibold px-6 py-3 rounded-md transition-colors"
             >
               Xem Toàn Bộ Thực Đơn

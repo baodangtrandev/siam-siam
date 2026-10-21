@@ -5,6 +5,17 @@ const nextConfig = {
   images: {
     formats: ["image/avif", "image/webp"],
   },
+  // URL tiếng Việt cũ chuyển vĩnh viễn (301) sang URL tiếng Anh, giữ link đã chia sẻ và thứ hạng SEO.
+  async redirects() {
+    return [
+      { source: "/thuc-don", destination: "/menu", permanent: true },
+      { source: "/ve-chung-toi", destination: "/about", permanent: true },
+      { source: "/bep-truong", destination: "/chef", permanent: true },
+      { source: "/set-menu-chon-loc", destination: "/set-menu", permanent: true },
+      { source: "/khong-gian", destination: "/space", permanent: true },
+      { source: "/lien-he", destination: "/contact", permanent: true },
+    ]
+  },
   async headers() {
     return [
       {

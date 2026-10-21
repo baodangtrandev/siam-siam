@@ -78,7 +78,7 @@ export default function ChefPage() {
             </div>
             <div className="flex flex-col sm:flex-row gap-4">
               <Link
-                href="/thuc-don"
+                href="/menu"
                 className="inline-block bg-brand-gold hover:bg-brand-gold/90 text-brand-green font-semibold px-6 py-3 text-base rounded-md transition-colors text-center"
               >
                 Khám Phá Thực Đơn Sáng Tạo Bởi Bếp Trưởng

@@ -16,7 +16,7 @@ const SLIDE_HEIGHT = `calc(100svh - ${TOP_OFFSET} - ${BOTTOM_BAR})`
 const PAGE_HEIGHT = `min(calc(100% - 1.5rem), calc((100vw - 2rem) / ${MENU_PAGE_RATIO}))`
 const PAGE_SIZES = "(min-width: 640px) 80vw, 94vw"
 
-export const pageSlideId = (page: number) => `menu-trang-${page}`
+export const pageSlideId = (page: number) => `menu-page-${page}`
 
 interface VerticalReaderProps {
   page: number

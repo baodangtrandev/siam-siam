@@ -5,7 +5,7 @@
 // Đầu vào : public/images/full-menu/menu-page-XX.webp (ảnh gốc 1600px)
 // Đầu ra  : public/images/full-menu/<width>/menu-page-XX.webp  (các kích thước responsive)
 //           public/images/full-menu/thumb/menu-page-XX.webp    (thumbnail)
-//           app/thuc-don/menu-placeholders.ts                   (ảnh mờ base64 hiện ngay lập tức)
+//           app/menu/menu-placeholders.ts                       (ảnh mờ base64 hiện ngay lập tức)
 
 import { mkdir, readdir, writeFile } from "node:fs/promises"
 import path from "node:path"
@@ -13,9 +13,9 @@ import sharp from "sharp"
 
 const ROOT = path.resolve(import.meta.dirname, "..")
 const SOURCE_DIR = path.join(ROOT, "public/images/full-menu")
-const PLACEHOLDER_FILE = path.join(ROOT, "app/thuc-don/menu-placeholders.ts")
+const PLACEHOLDER_FILE = path.join(ROOT, "app/menu/menu-placeholders.ts")
 
-// Phải khớp với MENU_IMAGE_WIDTHS trong app/thuc-don/menu-image-loader.ts
+// Phải khớp với MENU_IMAGE_WIDTHS trong app/menu/menu-image-loader.ts
 const WIDTHS = [480, 800, 1200]
 const THUMB_WIDTH = 112
 

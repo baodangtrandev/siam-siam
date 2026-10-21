@@ -54,7 +54,8 @@ interface TurnCustom {
 }
 
 const pageFromHash = () => {
-  const match = window.location.hash.match(/^#trang-(\d+)$/)
+  // Chấp nhận cả #trang-N cũ để link đã chia sẻ trước đây vẫn mở đúng trang.
+  const match = window.location.hash.match(/^#(?:page|trang)-(\d+)$/)
   const page = match ? Number(match[1]) : NaN
   return page >= 1 && page <= MENU_PAGE_COUNT ? page : null
 }
@@ -119,7 +120,7 @@ export default function MenuBook() {
     [goTo, isSpread, page, spreadIndex],
   )
 
-  // Mở đúng trang khi truy cập bằng link #trang-N, và cập nhật hash để chia sẻ được.
+  // Mở đúng trang khi truy cập bằng link #page-N, và cập nhật hash để chia sẻ được.
   useEffect(() => {
     const onHashChange = () => goTo(pageFromHash() ?? undefined, "auto")
     onHashChange()
@@ -128,7 +129,7 @@ export default function MenuBook() {
   }, [goTo])
 
   useEffect(() => {
-    const hash = page === 1 ? "" : `#trang-${page}`
+    const hash = page === 1 ? "" : `#page-${page}`
     if (window.location.hash !== hash) window.history.replaceState(null, "", hash || window.location.pathname)
   }, [page])
 
@@ -440,7 +441,7 @@ export default function MenuBook() {
           <Phone className="size-4" />
           Đặt bàn: {SITE.phoneDisplay}
         </GoldButton>
-        <GoldButton href="/set-menu-chon-loc">Xem Set Menu Chọn Lọc</GoldButton>
+        <GoldButton href="/set-menu">Xem Set Menu Chọn Lọc</GoldButton>
       </div>
 
       <AnimatePresence>
