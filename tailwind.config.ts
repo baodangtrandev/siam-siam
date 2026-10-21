@@ -84,10 +84,20 @@ const config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        "hotspot-pulse": {
+          "0%": { transform: "scale(0.6)", opacity: "0.9" },
+          "100%": { transform: "scale(2.2)", opacity: "0" },
+        },
+        shimmer: {
+          "0%": { transform: "translateX(-120%) skewX(-20deg)" },
+          "100%": { transform: "translateX(220%) skewX(-20deg)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "hotspot-pulse": "hotspot-pulse 1.8s cubic-bezier(0, 0, 0.2, 1) infinite",
+        shimmer: "shimmer 1.1s ease-out",
       },
       fontFamily: {
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],

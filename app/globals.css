@@ -90,3 +90,12 @@
     @apply bg-background text-foreground;
   }
 }
+@layer utilities {
+  /* Ẩn thanh cuộn nhưng vẫn cuộn được (thanh chương, thumbnail thực đơn) */
+  .scrollbar-none {
+    scrollbar-width: none;
+  }
+  .scrollbar-none::-webkit-scrollbar {
+    display: none;
+  }
+}
