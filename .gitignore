@@ -25,3 +25,5 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+# file gốc dung lượng lớn (vượt giới hạn 100 MB của GitHub), chỉ giữ trên máy
+/backup/*.pdf
