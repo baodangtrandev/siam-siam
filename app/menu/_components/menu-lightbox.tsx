@@ -5,12 +5,11 @@ import { motion } from "framer-motion"
 import { ChevronLeft, ChevronRight, X, ZoomIn, ZoomOut } from "lucide-react"
 import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import { menuImageLoader } from "../menu-image-loader"
-import { MENU_PAGE_COUNT, MENU_PAGE_RATIO, menuPageSrc } from "../menu-pages"
-import { menuPlaceholders } from "../menu-placeholders"
+import { MENU_PAGE_COUNT, menuPagePlaceholder, menuPageRatio, menuPageSrc } from "../menu-pages"
 
 const ZOOM = 2.4
-/** Chiều rộng trang khi vừa khung màn hình. */
-const FIT_WIDTH = `min(calc(100vw - 2rem), calc((100svh - 8rem) * ${MENU_PAGE_RATIO}))`
+/** Chiều rộng trang khi vừa khung màn hình (theo tỉ lệ riêng của từng trang). */
+const fitWidth = (ratio: number) => `min(calc(100vw - 2rem), calc((100svh - 8rem) * ${ratio}))`
 
 interface MenuLightboxProps {
   page: number
@@ -117,7 +116,10 @@ export default function MenuLightbox({ page, onClose, onNavigate }: MenuLightbox
           key={page}
           ref={contentRef}
           className={`relative mx-auto shrink-0 ${zoomed ? "cursor-zoom-out" : "cursor-zoom-in touch-pan-y"}`}
-          style={{ width: zoomed ? `calc(${FIT_WIDTH} * ${ZOOM})` : FIT_WIDTH, aspectRatio: `${MENU_PAGE_RATIO}` }}
+          style={{
+            width: zoomed ? `calc(${fitWidth(menuPageRatio(page))} * ${ZOOM})` : fitWidth(menuPageRatio(page)),
+            aspectRatio: `${menuPageRatio(page)}`,
+          }}
           initial={{ opacity: 0, scale: 0.97 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.3, ease: "easeOut" }}
@@ -139,7 +141,7 @@ export default function MenuLightbox({ page, onClose, onNavigate }: MenuLightbox
             sizes={zoomed ? "240vw" : "(min-width: 1024px) 60vw, 100vw"}
             loader={menuImageLoader}
             placeholder="blur"
-            blurDataURL={menuPlaceholders[page - 1]}
+            blurDataURL={menuPagePlaceholder(page)}
             draggable={false}
             className="select-none rounded-md object-contain shadow-2xl"
           />

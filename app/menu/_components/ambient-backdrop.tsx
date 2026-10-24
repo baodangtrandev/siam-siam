@@ -24,7 +24,7 @@ function ThaiSilkPattern({ id }: { id: string }) {
 }
 
 /** Cánh sen: gradient hồng → kem, vẽ bằng SVG. */
-function LotusPetal({ className }: { className?: string }) {
+export function LotusPetal({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 60 100" className={className} aria-hidden="true">
       <defs>
@@ -78,11 +78,38 @@ function FloatingPetal({ petal, parallax, animate }: { petal: PetalConfig; paral
   )
 }
 
+/**
+ * Cánh sen nằm sát mép màn hình, đặt PHÍA TRƯỚC trang menu trên điện thoại (khi trang gần full width).
+ * Chỉ ló vào ~4-5% chiều rộng trang, nơi không có chữ (chữ/giá/số trang luôn cách mép trang >= 7%),
+ * góc xoay gần thẳng đứng và parallax nhỏ để không trôi vào nội dung.
+ */
+const EDGE_PETALS: PetalConfig[] = [
+  { className: "-left-6 top-[34%] w-10", depth: 4, rotate: 18, delay: 0.7 },
+  { className: "-right-7 top-[62%] w-11", depth: 4, rotate: -20, delay: 1 },
+]
+
+export function EdgePetals({ parallax, animate }: { parallax: Parallax; animate: boolean }) {
+  return (
+    <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+      {EDGE_PETALS.map((petal, index) => (
+        <FloatingPetal key={index} petal={petal} parallax={parallax} animate={animate} />
+      ))}
+    </div>
+  )
+}
+
 function useLayer(value: MotionValue<number>, depth: number) {
   return useTransform(value, (v) => v * depth)
 }
 
-export default function AmbientBackdrop({ parallax, animate }: { parallax: Parallax; animate: boolean }) {
+interface AmbientBackdropProps {
+  parallax: Parallax
+  animate: boolean
+  /** Tắt cánh sen rải rác khi cánh sen được vẽ ở lớp riêng (vd. EdgePetals trên mobile). */
+  showPetals?: boolean
+}
+
+export default function AmbientBackdrop({ parallax, animate, showPetals = true }: AmbientBackdropProps) {
   const glowX = useLayer(parallax.x, -40)
   const glowY = useLayer(parallax.y, -30)
   const silkX = useLayer(parallax.x, 10)
@@ -118,9 +145,8 @@ export default function AmbientBackdrop({ parallax, animate }: { parallax: Paral
         <ThaiSilkPattern id="silk-right" />
       </motion.div>
 
-      {PETALS.map((petal, index) => (
-        <FloatingPetal key={index} petal={petal} parallax={parallax} animate={animate} />
-      ))}
+      {showPetals &&
+        PETALS.map((petal, index) => <FloatingPetal key={index} petal={petal} parallax={parallax} animate={animate} />)}
     </div>
   )
 }

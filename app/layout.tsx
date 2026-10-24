@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils"
 import { SITE } from "@/lib/site"
 import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
+import ContactFab from "@/components/contact-actions"
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import Script from "next/script"
@@ -59,6 +60,22 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 })(window,document,'script','dataLayer','GTM-WPJDBQZD');`,
           }}
         />
+        {/* Google tag (gtag.js) - Google Ads */}
+        <Script
+          id="google-ads-gtag-src"
+          strategy="afterInteractive"
+          src="https://www.googletagmanager.com/gtag/js?id=AW-18528543458"
+        />
+        <Script
+          id="google-ads-gtag"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'AW-18528543458');`,
+          }}
+        />
       </head>
       <body className={cn("min-h-screen bg-brand-cream font-sans antialiased", fontMontserrat.variable)}>
         <noscript>
@@ -76,6 +93,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
           </main>
           <Footer />
         </div>
+        <ContactFab />
         <Analytics />
         <SpeedInsights />
       </body>

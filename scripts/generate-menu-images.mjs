@@ -2,9 +2,9 @@
 // next/image nén ảnh lúc chạy. Chạy lại mỗi khi thay ảnh trong public/images/full-menu:
 //   pnpm menu:images
 //
-// Đầu vào : public/images/full-menu/menu-page-XX.webp (ảnh gốc 1600px)
-// Đầu ra  : public/images/full-menu/<width>/menu-page-XX.webp  (các kích thước responsive)
-//           public/images/full-menu/thumb/menu-page-XX.webp    (thumbnail)
+// Đầu vào : public/images/full-menu/<tên>-page-XX.webp (ảnh gốc rộng 1600px: menu-, drink-, chay-...)
+// Đầu ra  : public/images/full-menu/<width>/<tên>-page-XX.webp  (các kích thước responsive)
+//           public/images/full-menu/thumb/<tên>-page-XX.webp    (thumbnail)
 //           app/menu/menu-placeholders.ts                       (ảnh mờ base64 hiện ngay lập tức)
 
 import { mkdir, readdir, writeFile } from "node:fs/promises"
@@ -19,7 +19,7 @@ const PLACEHOLDER_FILE = path.join(ROOT, "app/menu/menu-placeholders.ts")
 const WIDTHS = [480, 800, 1200]
 const THUMB_WIDTH = 112
 
-const files = (await readdir(SOURCE_DIR)).filter((name) => /^menu-page-\d+\.webp$/.test(name)).sort()
+const files = (await readdir(SOURCE_DIR)).filter((name) => /^[a-z]+-page-\d+\.webp$/.test(name)).sort()
 const placeholders = []
 
 for (const name of files) {
@@ -36,17 +36,17 @@ for (const name of files) {
   await sharp(input).resize({ width: THUMB_WIDTH }).webp({ quality: 60 }).toFile(path.join(thumbDir, name))
 
   const blur = await sharp(input).resize({ width: 12 }).webp({ quality: 40 }).toBuffer()
-  placeholders.push(`  "data:image/webp;base64,${blur.toString("base64")}",`)
+  placeholders.push(`  "${name.replace(/\.webp$/, "")}": "data:image/webp;base64,${blur.toString("base64")}",`)
 }
 
 await writeFile(
   PLACEHOLDER_FILE,
   `// File tự sinh bởi scripts/generate-menu-images.mjs, không sửa tay.
-/** Ảnh mờ siêu nhỏ cho từng trang menu (index 0 = trang 1). */
-export const menuPlaceholders: string[] = [
+/** Ảnh mờ siêu nhỏ cho từng ảnh trang menu, theo tên file (không đuôi .webp). */
+export const menuPlaceholders: Record<string, string> = {
 ${placeholders.join("\n")}
-]
+}
 `,
 )
 
-console.log(`Đã tạo ảnh cho ${files.length} trang: ${WIDTHS.join(", ")}px, thumbnail ${THUMB_WIDTH}px và placeholder.`)
+console.log(`Đã tạo ảnh cho ${files.length} ảnh trang: ${WIDTHS.join(", ")}px, thumbnail ${THUMB_WIDTH}px và placeholder.`)

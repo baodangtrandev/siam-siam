@@ -92,12 +92,24 @@ const config = {
           "0%": { transform: "translateX(-120%) skewX(-20deg)" },
           "100%": { transform: "translateX(220%) skewX(-20deg)" },
         },
+        "cta-pulse": {
+          "0%": { transform: "scale(1)", opacity: "0.55" },
+          "100%": { transform: "scale(1.65)", opacity: "0" },
+        },
+        // Rung nhẹ trong 1s đầu rồi nghỉ, lặp lại mỗi 4s
+        "phone-wiggle": {
+          "0%, 25%, 100%": { transform: "rotate(0deg)" },
+          "5%, 15%": { transform: "rotate(-14deg)" },
+          "10%, 20%": { transform: "rotate(14deg)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "hotspot-pulse": "hotspot-pulse 1.8s cubic-bezier(0, 0, 0.2, 1) infinite",
         shimmer: "shimmer 1.1s ease-out",
+        "cta-pulse": "cta-pulse 2s cubic-bezier(0, 0, 0.2, 1) infinite",
+        "phone-wiggle": "phone-wiggle 4s ease-in-out infinite",
       },
       fontFamily: {
         sans: ["var(--font-sans)", "system-ui", "sans-serif"],

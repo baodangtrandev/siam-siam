@@ -6,6 +6,7 @@ export const SITE = {
     "Khám phá hương vị ẩm thực Hoàng Gia Thái đích thực tại Siam Siam, 42H Yên Phụ, Ba Đình, Hà Nội. Bếp trưởng 16 năm kinh nghiệm.",
   phoneHref: "tel:0812353588",
   phoneDisplay: "0812 353 588",
+  zaloUrl: "https://zalo.me/3962047343114838464",
   email: "info@siamsiam.vn",
   address: "42H Đường Yên Phụ, Trúc Bạch, Ba Đình, Hà Nội",
   mapUrl: "https://g.co/kgs/yyVa7s2",

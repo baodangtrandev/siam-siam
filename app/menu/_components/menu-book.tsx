@@ -10,12 +10,13 @@ import {
   type Variants,
 } from "framer-motion"
 import { BookOpen, ChevronLeft, ChevronRight, Expand, Phone, Sparkles } from "lucide-react"
-import { Fragment, useCallback, useEffect, useRef, useState, type CSSProperties } from "react"
+import { useCallback, useEffect, useRef, useState, type CSSProperties } from "react"
 import { SITE } from "@/lib/site"
 import {
   MENU_PAGE_COUNT,
   MENU_PAGE_RATIO,
   chapterOfPage,
+  menuPageRatio,
   menuChapters,
   menuHotspots,
   menuPageSrc,
@@ -30,15 +31,15 @@ import MenuLightbox from "./menu-lightbox"
 import MenuPage from "./menu-page"
 import MenuStorySheet from "./menu-story-sheet"
 import { useMediaQuery, useParallax } from "./use-parallax"
-import VerticalReader, { pageSlideId } from "./vertical-reader"
+import VerticalReader, { type ScrollToPage } from "./vertical-reader"
 
 /**
- * Chiều cao trang đôi (desktop): vừa màn hình sau khi trừ navbar, thanh chương, thanh điều khiển
- * và thumbnail, đồng thời không vượt quá chiều rộng khả dụng.
+ * Chiều cao trang đôi (desktop): bằng chiều cao thực của "sân khấu" (đo bằng ResizeObserver, phần còn
+ * lại sau navbar, thanh chương, thanh điều khiển và thumbnail) nên cuốn menu luôn vừa khít màn hình,
+ * đồng thời không vượt quá chiều rộng khả dụng.
  */
-const SPREAD_PAGE_HEIGHT = `max(26rem, min(calc(100svh - 17rem), calc((100vw - 12rem) / 2 / ${MENU_PAGE_RATIO})))`
-
-const TITLE_WORDS = ["Thực", "Đơn", "Hoàng", "Gia", "Thái"]
+const spreadPageHeight = (stageHeight: number) =>
+  `min(${stageHeight}px, calc((100vw - 12rem) / 2 / ${MENU_PAGE_RATIO}))`
 
 const turnVariants: Variants = {
   enter: ({ direction, reduce }: TurnCustom) =>
@@ -67,11 +68,13 @@ export default function MenuBook() {
   const [direction, setDirection] = useState(1)
   const [lightboxPage, setLightboxPage] = useState<number | null>(null)
   const [storyPage, setStoryPage] = useState<number | null>(null)
+  const [stageHeight, setStageHeight] = useState(0)
 
   const stageRef = useRef<HTMLDivElement>(null)
   const chapterBarRef = useRef<HTMLDivElement>(null)
   const thumbnailsRef = useRef<HTMLDivElement>(null)
   const draggedRef = useRef(false)
+  const scrollToPageRef = useRef<ScrollToPage | null>(null)
   // Trang hiện tại cho các callback ổn định (không phụ thuộc render).
   const pageRef = useRef(page)
 
@@ -98,12 +101,10 @@ export default function MenuBook() {
       setDirection(target >= pageRef.current ? 1 : -1)
       pageRef.current = target
       setPage(target)
-      // Chế độ đọc dọc: cuộn tới trang, trang hiện tại sẽ được cập nhật lại theo vị trí cuộn.
-      if (!isSpread) {
-        document.getElementById(pageSlideId(target))?.scrollIntoView({ behavior: reduceMotion ? "auto" : behavior })
-      }
+      // Chế độ đọc dọc: cuộn tới đúng trang đích.
+      if (!isSpread) scrollToPageRef.current?.(target, behavior)
     },
-    [isSpread, reduceMotion],
+    [isSpread],
   )
 
   const handleVisiblePage = useCallback((visible: number) => {
@@ -164,6 +165,15 @@ export default function MenuBook() {
     centerChild(thumbnailsRef.current, '[aria-current="true"]')
   }, [page, isSpread, reduceMotion])
 
+  // Đo chiều cao sân khấu để cuốn menu vừa khít phần màn hình còn lại (desktop).
+  useEffect(() => {
+    const stage = stageRef.current
+    if (!isSpread || !stage) return
+    const observer = new ResizeObserver(([entry]) => setStageHeight(Math.floor(entry.contentRect.height)))
+    observer.observe(stage)
+    return () => observer.disconnect()
+  }, [isSpread])
+
   const openLightbox = (target: number) => {
     if (draggedRef.current) return
     setLightboxPage(target)
@@ -177,49 +187,14 @@ export default function MenuBook() {
       aria-roledescription="carousel"
       aria-label="Thực đơn Siam Siam"
       // overflow-x-clip (không phải hidden) để thanh chương và nền ambient vẫn sticky được.
-      className="relative overflow-x-clip bg-brand-green bg-brand-pattern text-brand-cream"
+      // Desktop: cao đúng bằng màn hình trừ navbar (5rem + 1px viền), cuốn menu vừa khít khung hình mà không cần cuộn.
+      className="relative overflow-x-clip bg-brand-green bg-brand-pattern text-brand-cream lg:flex lg:h-[calc(100svh-5rem-1px)] lg:flex-col"
     >
-      {/* ----- Tiêu đề ----- */}
-      <header className="relative z-10 px-4 pb-4 pt-8 text-center md:pt-12">
-        <motion.p
-          className="mb-2 text-xs font-semibold uppercase tracking-[0.35em] text-brand-gold md:text-sm"
-          initial={reduceMotion ? false : { opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          Siam Siam · Full Menu
-        </motion.p>
-        <h1 className="text-balance text-3xl font-bold uppercase tracking-wide text-white md:text-5xl">
-          {TITLE_WORDS.map((word, index) => (
-            <Fragment key={word}>
-              <span className="inline-block overflow-hidden pb-1 align-bottom">
-                <motion.span
-                  className="inline-block"
-                  initial={reduceMotion ? false : { y: "110%" }}
-                  animate={{ y: 0 }}
-                  transition={{ duration: 0.8, delay: 0.15 + index * 0.08, ease: [0.22, 1, 0.36, 1] }}
-                >
-                  {word}
-                </motion.span>
-              </span>
-              {index < TITLE_WORDS.length - 1 && " "}
-            </Fragment>
-          ))}
-        </h1>
-        <motion.p
-          className="mx-auto mt-3 max-w-xl text-sm font-light text-brand-cream/75 md:text-base"
-          initial={reduceMotion ? false : { opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.8, delay: 0.7 }}
-        >
-          Lật từng trang để khám phá {MENU_PAGE_COUNT} trang tinh hoa ẩm thực hoàng gia, chạm vào trang để xem rõ tên
-          món và giá.
-        </motion.p>
-      </header>
+      <h1 className="sr-only">Thực đơn Siam Siam - Ẩm thực Hoàng gia Thái</h1>
 
       {/* ----- Thanh chương (dính dưới navbar) ----- */}
-      <nav aria-label="Các chương thực đơn" className="sticky top-20 z-30 border-y border-brand-gold/20 bg-brand-green/85 backdrop-blur-md">
-        <div ref={chapterBarRef} className="scrollbar-none flex gap-2 overflow-x-auto px-4 py-2.5 md:justify-center">
+      <nav aria-label="Các chương thực đơn" className="sticky top-20 z-30 shrink-0 border-y border-brand-gold/20 bg-brand-green/85 backdrop-blur-md">
+        <div ref={chapterBarRef} className="scrollbar-none flex gap-2 overflow-x-auto px-4 py-1.5 md:justify-center lg:py-2.5">
           {menuChapters.map((item) => {
             const current = item.id === chapter.id
             return (
@@ -245,6 +220,7 @@ export default function MenuBook() {
         <VerticalReader
           page={page}
           reduceMotion={reduceMotion}
+          scrollToPageRef={scrollToPageRef}
           onVisiblePageChange={handleVisiblePage}
           onNavigate={goTo}
           onOpen={openLightbox}
@@ -257,13 +233,13 @@ export default function MenuBook() {
           {/* ----- Sân khấu: cuốn menu (desktop) ----- */}
           <div
             ref={stageRef}
-            className="relative px-4 py-6 md:py-8 [perspective:1800px]"
-            style={{ "--page-h": SPREAD_PAGE_HEIGHT } as CSSProperties}
+            className="relative flex min-h-0 flex-1 flex-col justify-center px-4 py-4 [perspective:1800px]"
+            style={{ "--page-h": spreadPageHeight(stageHeight) } as CSSProperties}
           >
             <AmbientBackdrop parallax={parallax} animate={!reduceMotion} />
 
             <motion.div
-              className="relative mx-auto h-[var(--page-h)] will-change-transform [transform-style:preserve-3d]"
+              className="relative mx-auto h-[var(--page-h)] w-full will-change-transform [transform-style:preserve-3d]"
               style={{ rotateX, rotateY }}
               initial={reduceMotion ? false : { opacity: 0, scale: 1.05, y: 30 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -309,7 +285,7 @@ export default function MenuBook() {
                       className="pointer-events-none absolute inset-y-0 left-1/2 -translate-x-1/2 rounded-md mix-blend-soft-light"
                       style={{
                         backgroundImage: glare,
-                        width: `calc(var(--page-h) * ${MENU_PAGE_RATIO * visiblePages.length})`,
+                        width: `calc(var(--page-h) * ${visiblePages.reduce((sum, p) => sum + menuPageRatio(p), 0)})`,
                       }}
                     />
                   )}
@@ -323,21 +299,10 @@ export default function MenuBook() {
               <PageArrow direction="next" disabled={!canNext} onClick={goNext} />
             </div>
 
-            {hasHotspots && (
-              <motion.p
-                className="relative mt-4 flex items-center justify-center gap-2 text-center text-xs text-brand-cream/75 md:text-sm"
-                initial={{ opacity: 0, y: 6 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 1 }}
-              >
-                <Sparkles className="size-4 text-brand-gold" />
-                Di chuột hoặc chạm vào các điểm sáng để khám phá nguyên liệu
-              </motion.p>
-            )}
           </div>
 
           {/* ----- Thanh điều khiển ----- */}
-          <div className="relative z-10 mx-auto flex max-w-3xl items-center gap-3 px-4">
+          <div className="relative z-10 mx-auto flex w-full max-w-4xl shrink-0 items-center gap-3 px-4 pb-1">
             <button
               type="button"
               onClick={goPrev}
@@ -350,9 +315,17 @@ export default function MenuBook() {
 
             <div className="min-w-0 flex-1">
               <div className="flex items-baseline justify-between gap-3 text-sm">
-                <p className="truncate">
+                <p className="flex min-w-0 items-baseline gap-2 truncate">
                   <span className="font-semibold text-brand-gold">{chapter.title}</span>
-                  <span className="ml-2 hidden text-brand-cream/60 sm:inline">{chapter.subtitle}</span>
+                  {/* Trang có hotspot: gợi ý thay cho tên tiếng Anh của chương */}
+                  {hasHotspots ? (
+                    <span className="inline-flex items-center gap-1.5 truncate text-xs text-brand-cream/75">
+                      <Sparkles className="size-3.5 shrink-0 text-brand-gold" />
+                      Di chuột vào điểm sáng để khám phá nguyên liệu
+                    </span>
+                  ) : (
+                    <span className="text-brand-cream/60">{chapter.subtitle}</span>
+                  )}
                 </p>
                 <p className="shrink-0 tabular-nums tracking-widest" aria-live="polite">
                   <span className="sr-only">Trang </span>
@@ -369,6 +342,16 @@ export default function MenuBook() {
               </div>
             </div>
 
+            {storyOnView && (
+              <button
+                type="button"
+                onClick={() => setStoryPage(storyOnView)}
+                className="inline-flex h-11 shrink-0 items-center gap-2 rounded-full border border-brand-gold bg-brand-gold px-4 text-sm font-semibold text-brand-green transition hover:bg-brand-gold-light"
+              >
+                <BookOpen className="size-4" />
+                Câu chuyện món ăn
+              </button>
+            )}
             <button
               type="button"
               onClick={() => openLightbox(visiblePages[0])}
@@ -389,7 +372,7 @@ export default function MenuBook() {
           </div>
 
           {/* ----- Thumbnail toàn bộ trang ----- */}
-          <div ref={thumbnailsRef} className="scrollbar-none relative z-10 mt-4 flex gap-2 overflow-x-auto px-4 pb-2 pt-1">
+          <div ref={thumbnailsRef} className="scrollbar-none relative z-10 mt-2 flex shrink-0 gap-2 overflow-x-auto px-4 pb-3 pt-1">
             {Array.from({ length: MENU_PAGE_COUNT }, (_, i) => i + 1).map((p) => {
               const current = visiblePages.includes(p)
               return (
@@ -399,7 +382,8 @@ export default function MenuBook() {
                   onClick={() => goTo(p)}
                   aria-label={`Đến trang ${p}`}
                   aria-current={current && p === visiblePages[0]}
-                  className={`relative aspect-[1600/2263] w-12 shrink-0 overflow-hidden rounded transition md:w-14 ${
+                  style={{ aspectRatio: `${menuPageRatio(p)}` }}
+                  className={`relative h-14 shrink-0 overflow-hidden rounded transition ${
                     current ? "opacity-100 ring-2 ring-brand-gold" : "opacity-50 hover:opacity-90"
                   }`}
                 >
@@ -420,29 +404,16 @@ export default function MenuBook() {
         </>
       )}
 
-      {/* ----- CTA ----- */}
-      <div className="relative z-10 flex flex-wrap items-center justify-center gap-3 px-4 pb-12 pt-6 md:pb-16">
-        <AnimatePresence>
-          {isSpread && storyOnView && (
-            <motion.div
-              key="story"
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-            >
-              <GoldButton onClick={() => setStoryPage(storyOnView)}>
-                <BookOpen className="size-4 text-brand-gold" />
-                Khám phá câu chuyện món ăn
-              </GoldButton>
-            </motion.div>
-          )}
-        </AnimatePresence>
-        <GoldButton href={SITE.phoneHref} className="bg-brand-gold/90 text-brand-green hover:bg-brand-gold hover:text-brand-green">
-          <Phone className="size-4" />
-          Đặt bàn: {SITE.phoneDisplay}
-        </GoldButton>
-        <GoldButton href="/set-menu">Xem Set Menu Chọn Lọc</GoldButton>
-      </div>
+      {/* ----- CTA cuối chế độ đọc dọc (desktop đã có nút nổi Zalo / Hotline và Set Menu trên navbar) ----- */}
+      {!isSpread && (
+        <div className="relative z-10 flex flex-wrap items-center justify-center gap-3 px-4 pb-12 pt-6">
+          <GoldButton href={SITE.phoneHref} className="bg-brand-gold/90 text-brand-green hover:bg-brand-gold hover:text-brand-green">
+            <Phone className="size-4" />
+            Đặt bàn: {SITE.phoneDisplay}
+          </GoldButton>
+          <GoldButton href="/set-menu">Xem Set Menu Chọn Lọc</GoldButton>
+        </div>
+      )}
 
       <AnimatePresence>
         {lightboxPage !== null && (

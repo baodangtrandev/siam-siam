@@ -1,12 +1,61 @@
 // Dữ liệu cho cuốn menu tương tác: danh sách trang ảnh, chương, hotspot và câu chuyện món ăn.
-// Ảnh trang được tách từ "Menu Siam Full.pdf" (mỗi trang PDF = 1 ảnh webp 1600x2263).
+// Ảnh trang được tách từ các file PDF (rộng 1600px):
+//   menu-page-XX.webp  : "Menu Siam Full.pdf" (A4 đứng, 1600x2263)
+//   drink-page-XX.webp : "Drink Menu 25x25.pdf" trang 3-8 (vuông, 1600x1600)
+//   chay-page-XX.webp  : "menu chay.pdf" (đứng, 1600x2399)
+// Số trang hiển thị (1..MENU_PAGE_COUNT) là thứ tự trong cuốn menu online, KHÁC số trong tên file.
 
-export const MENU_PAGE_COUNT = 42
-export const MENU_PAGE_WIDTH = 1600
-export const MENU_PAGE_HEIGHT = 2263
-export const MENU_PAGE_RATIO = MENU_PAGE_WIDTH / MENU_PAGE_HEIGHT
+import { menuPlaceholders } from "./menu-placeholders"
 
-export const menuPageSrc = (page: number) => `/images/full-menu/menu-page-${String(page).padStart(2, "0")}.webp`
+export interface MenuPageImage {
+  /** Tên file không đuôi, dùng làm khoá cho hotspot / câu chuyện / placeholder. */
+  id: string
+  /** Tỉ lệ rộng / cao của ảnh. */
+  ratio: number
+}
+
+/** Tỉ lệ trang A4 của menu chính, dùng làm chuẩn cho bố cục. */
+export const MENU_PAGE_RATIO = 1600 / 2263
+const SQUARE_RATIO = 1
+const VEGETARIAN_RATIO = 1600 / 2399
+
+const pad = (n: number) => String(n).padStart(2, "0")
+const pagesOf = (prefix: string, numbers: number[], ratio: number): MenuPageImage[] =>
+  numbers.map((n) => ({ id: `${prefix}-page-${pad(n)}`, ratio }))
+const range = (from: number, to: number) => Array.from({ length: to - from + 1 }, (_, i) => from + i)
+const main = (from: number, to: number) => pagesOf("menu", range(from, to), MENU_PAGE_RATIO)
+
+interface ChapterDefinition {
+  id: string
+  title: string
+  subtitle: string
+  pages: MenuPageImage[]
+}
+
+/** Thứ tự chương của cuốn menu online. Đổi thứ tự ở đây là đổi thứ tự trên web. */
+const chapterDefinitions: ChapterDefinition[] = [
+  { id: "mo-dau", title: "Lời Mở Đầu", subtitle: "Welcome", pages: main(1, 2) },
+  { id: "goi", title: "Gỏi", subtitle: "Salad", pages: main(15, 18) },
+  { id: "hai-san", title: "Hải Sản", subtitle: "Seafood", pages: main(19, 26) },
+  { id: "thit", title: "Thịt", subtitle: "Meat", pages: main(27, 30) },
+  { id: "sup-lau", title: "Súp & Lẩu", subtitle: "Soup & Hotpot", pages: main(31, 33) },
+  { id: "rau", title: "Rau", subtitle: "Vegetables", pages: main(34, 34) },
+  { id: "com-mi", title: "Cơm & Mì", subtitle: "Rice & Noodles", pages: main(35, 38) },
+  { id: "hoang-gia", title: "Hương Vị Hoàng Gia", subtitle: "Royal Selection", pages: main(3, 14) },
+  { id: "nuoc", title: "Nước", subtitle: "Drinks", pages: pagesOf("drink", range(1, 6), SQUARE_RATIO) },
+  { id: "trang-mieng", title: "Tráng Miệng", subtitle: "Desserts", pages: main(39, 40) },
+  { id: "chay", title: "Chay", subtitle: "Vegetarian", pages: pagesOf("chay", [1], VEGETARIAN_RATIO) },
+  { id: "lien-he", title: "Liên Hệ", subtitle: "Contact", pages: main(41, 42) },
+]
+
+/** Toàn bộ ảnh trang theo thứ tự hiển thị (index 0 = trang 1). */
+export const menuPages: MenuPageImage[] = chapterDefinitions.flatMap((chapter) => chapter.pages)
+export const MENU_PAGE_COUNT = menuPages.length
+
+const imageOf = (page: number) => menuPages[page - 1]
+export const menuPageSrc = (page: number) => `/images/full-menu/${imageOf(page).id}.webp`
+export const menuPageRatio = (page: number) => imageOf(page)?.ratio ?? MENU_PAGE_RATIO
+export const menuPagePlaceholder = (page: number) => menuPlaceholders[imageOf(page).id]
 
 export interface MenuChapter {
   id: string
@@ -15,34 +64,50 @@ export interface MenuChapter {
   startPage: number
 }
 
-/** Các chương theo đúng thứ tự trong cuốn menu in. */
-export const menuChapters: MenuChapter[] = [
-  { id: "mo-dau", title: "Lời Mở Đầu", subtitle: "Welcome", startPage: 1 },
-  { id: "hoang-gia", title: "Hương Vị Hoàng Gia", subtitle: "Royal Selection", startPage: 3 },
-  { id: "goi", title: "Gỏi", subtitle: "Salad", startPage: 15 },
-  { id: "hai-san", title: "Hải Sản", subtitle: "Seafood", startPage: 19 },
-  { id: "thit", title: "Thịt", subtitle: "Meat", startPage: 27 },
-  { id: "sup-lau", title: "Súp & Lẩu", subtitle: "Soup & Hotpot", startPage: 31 },
-  { id: "rau", title: "Rau", subtitle: "Vegetables", startPage: 34 },
-  { id: "com-mi", title: "Cơm & Mì", subtitle: "Rice & Noodles", startPage: 35 },
-  { id: "trang-mieng", title: "Tráng Miệng", subtitle: "Desserts", startPage: 39 },
-  { id: "lien-he", title: "Liên Hệ", subtitle: "Contact", startPage: 41 },
-]
+export const menuChapters: MenuChapter[] = chapterDefinitions.map(({ id, title, subtitle }, index) => ({
+  id,
+  title,
+  subtitle,
+  startPage: 1 + chapterDefinitions.slice(0, index).reduce((sum, chapter) => sum + chapter.pages.length, 0),
+}))
 
 export const chapterOfPage = (page: number) =>
   menuChapters.reduce((current, chapter) => (page >= chapter.startPage ? chapter : current), menuChapters[0])
 
 /**
- * Trang đôi khi xem trên desktop. Trong bản in, trang lẻ (từ trang 3) nằm bên trái,
- * nên bìa (1) và lời mở đầu (2) đứng riêng, sau đó ghép [3,4], [5,6], ... [41,42].
+ * Trang đôi khi xem trên desktop: bìa đứng riêng, các trang đứng (A4) ghép cặp trong cùng một chương,
+ * trang vuông (menu nước) vốn đã rộng nên đứng riêng. Chương lẻ trang thì trang cuối đứng riêng.
  */
-export const menuSpreads: number[][] = [
-  [1],
-  [2],
-  ...Array.from({ length: (MENU_PAGE_COUNT - 2) / 2 }, (_, i) => [3 + i * 2, 4 + i * 2]),
-]
+export const menuSpreads: number[][] = (() => {
+  const spreads: number[][] = [[1]]
+  chapterDefinitions.forEach((chapter, index) => {
+    const start = menuChapters[index].startPage
+    const end = start + chapter.pages.length
+    let pending: number | null = null
+    for (let page = Math.max(start, 2); page < end; page++) {
+      if (menuPageRatio(page) > 0.9) {
+        if (pending) spreads.push([pending])
+        spreads.push([page])
+        pending = null
+      } else if (pending) {
+        spreads.push([pending, page])
+        pending = null
+      } else {
+        pending = page
+      }
+    }
+    if (pending) spreads.push([pending])
+  })
+  return spreads
+})()
 
 export const spreadIndexOfPage = (page: number) => menuSpreads.findIndex((spread) => spread.includes(page))
+
+/** Chuyển dữ liệu khai báo theo ảnh (id) sang theo số trang hiển thị. */
+const byPage = <T>(byImage: Record<string, T>): Record<number, T> =>
+  Object.fromEntries(
+    menuPages.flatMap((image, index) => (byImage[image.id] ? [[index + 1, byImage[image.id]]] : [])),
+  ) as Record<number, T>
 
 export interface MenuHotspot {
   id: string
@@ -53,9 +118,9 @@ export interface MenuHotspot {
   description: string
 }
 
-/** Điểm tương tác trên ảnh, đánh dấu từng nguyên liệu của món. */
-export const menuHotspots: Record<number, MenuHotspot[]> = {
-  3: [
+/** Điểm tương tác trên ảnh, đánh dấu từng nguyên liệu của món (khai báo theo ảnh). */
+const hotspotsByImage: Record<string, MenuHotspot[]> = {
+  "menu-page-03": [
     {
       id: "sot-miang",
       x: 50,
@@ -115,9 +180,9 @@ export interface MenuStory {
   paragraphs: string[]
 }
 
-/** Câu chuyện món ăn, hiển thị bằng nút “Khám phá câu chuyện món ăn”. */
-export const menuStories: Record<number, MenuStory> = {
-  3: {
+/** Câu chuyện món ăn, hiển thị bằng nút “Khám phá câu chuyện món ăn” (khai báo theo ảnh). */
+const storiesByImage: Record<string, MenuStory> = {
+  "menu-page-03": {
     title: "Miang Kham Hoa Sen",
     englishTitle: "Lotus Petal Miang Kham",
     price: "385.000",
@@ -127,3 +192,7 @@ export const menuStories: Record<number, MenuStory> = {
     ],
   },
 }
+
+/** Hotspot / câu chuyện theo số trang hiển thị. */
+export const menuHotspots = byPage(hotspotsByImage)
+export const menuStories = byPage(storiesByImage)

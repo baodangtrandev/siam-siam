@@ -4,13 +4,20 @@ import Image from "next/image"
 import { AnimatePresence, motion } from "framer-motion"
 import { useState } from "react"
 import { menuImageLoader } from "../menu-image-loader"
-import { MENU_PAGE_RATIO, menuHotspots, menuPageSrc, type MenuHotspot } from "../menu-pages"
-import { menuPlaceholders } from "../menu-placeholders"
+import {
+  MENU_PAGE_RATIO,
+  menuHotspots,
+  menuPagePlaceholder,
+  menuPageRatio,
+  menuPageSrc,
+  type MenuHotspot,
+} from "../menu-pages"
 
 /** Bán kính thấu kính phóng to, tính theo % của clip-path circle(). */
 const LENS_RADIUS = 12
 const LENS_SCALE = 1.55
 // clip-path circle(r%) dựa trên sqrt((w² + h²) / 2), quy đổi ra % chiều rộng trang để vẽ viền vàng khớp.
+// Hotspot hiện chỉ có trên trang A4 nên tính theo tỉ lệ A4.
 const LENS_RING_WIDTH = 2 * LENS_RADIUS * Math.sqrt((1 + 1 / MENU_PAGE_RATIO ** 2) / 2)
 
 interface MenuPageProps {
@@ -19,12 +26,17 @@ interface MenuPageProps {
   priority?: boolean
   /** Tải ngay thay vì lazy (dùng cho các trang sắp được xem). */
   eager?: boolean
+  /**
+   * Ưu tiên mạng cao nhưng vẫn lazy: tải ngay nếu trang đang hiển thị, bỏ qua nếu đang bị ẩn
+   * (khác `priority` luôn tải kể cả khi bị ẩn bằng CSS).
+   */
+  highPriority?: boolean
   /** Vị trí trong trang đôi, quyết định bo góc và bóng gáy sách. */
   side: "left" | "right" | "single"
   onOpen: (page: number) => void
 }
 
-export default function MenuPage({ page, sizes, priority, eager, side, onOpen }: MenuPageProps) {
+export default function MenuPage({ page, sizes, priority, eager, highPriority, side, onOpen }: MenuPageProps) {
   const hotspots = menuHotspots[page] ?? []
   const [activeId, setActiveId] = useState<string | null>(null)
   const active = hotspots.find((hotspot) => hotspot.id === activeId)
@@ -38,7 +50,7 @@ export default function MenuPage({ page, sizes, priority, eager, side, onOpen }:
   return (
     <div
       className="relative h-full [transform-style:preserve-3d]"
-      style={{ aspectRatio: `${MENU_PAGE_RATIO}` }}
+      style={{ aspectRatio: `${menuPageRatio(page)}` }}
       onPointerLeave={(event) => event.pointerType === "mouse" && setActiveId(null)}
     >
       <button
@@ -55,8 +67,9 @@ export default function MenuPage({ page, sizes, priority, eager, side, onOpen }:
           loader={menuImageLoader}
           priority={priority}
           loading={priority ? undefined : eager ? "eager" : "lazy"}
+          fetchPriority={highPriority ? "high" : undefined}
           placeholder="blur"
-          blurDataURL={menuPlaceholders[page - 1]}
+          blurDataURL={menuPagePlaceholder(page)}
           draggable={false}
           className="select-none object-cover"
         />
