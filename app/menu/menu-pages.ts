@@ -42,9 +42,9 @@ const chapterDefinitions: ChapterDefinition[] = [
   { id: "rau", title: "Rau", subtitle: "Vegetables", pages: main(34, 34) },
   { id: "com-mi", title: "Cơm & Mì", subtitle: "Rice & Noodles", pages: main(35, 38) },
   { id: "hoang-gia", title: "Hương Vị Hoàng Gia", subtitle: "Royal Selection", pages: main(3, 14) },
-  { id: "nuoc", title: "Nước", subtitle: "Drinks", pages: pagesOf("drink", range(1, 6), SQUARE_RATIO) },
+  { id: "chay", title: "Món Chay", subtitle: "Vegetarian", pages: pagesOf("chay", [1], VEGETARIAN_RATIO) },
   { id: "trang-mieng", title: "Tráng Miệng", subtitle: "Desserts", pages: main(39, 40) },
-  { id: "chay", title: "Chay", subtitle: "Vegetarian", pages: pagesOf("chay", [1], VEGETARIAN_RATIO) },
+  { id: "nuoc", title: "Nước", subtitle: "Drinks", pages: pagesOf("drink", range(1, 6), SQUARE_RATIO) },
   { id: "lien-he", title: "Liên Hệ", subtitle: "Contact", pages: main(41, 42) },
 ]
 
