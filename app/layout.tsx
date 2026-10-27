@@ -7,6 +7,7 @@ import { SITE } from "@/lib/site"
 import Navbar from "@/components/navbar"
 import Footer from "@/components/footer"
 import ContactFab from "@/components/contact-actions"
+import EventPopup from "@/components/event-popup"
 import { Analytics } from "@vercel/analytics/react"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import Script from "next/script"
@@ -94,6 +95,7 @@ gtag('config', 'AW-18528543458');`,
           <Footer />
         </div>
         <ContactFab />
+        <EventPopup />
         <Analytics />
         <SpeedInsights />
       </body>
