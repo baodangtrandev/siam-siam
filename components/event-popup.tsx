@@ -10,9 +10,11 @@ import { trackContactClick } from "./contact-actions"
  * Cấu hình sự kiện đang quảng bá. Đổi sự kiện: thay ảnh, `id` (để khách đã tắt popup cũ vẫn thấy
  * popup mới) và `endsAt` (popup tự ẩn sau thời điểm này).
  */
-const EVENT = {
+const MAIN_EVENT = {
   id: "di-cang-dong-uu-dai-cang-hoi",
   title: "Đi càng đông - Ưu đãi càng hời",
+  alt: "nhóm 4 khách tặng Bingsu, bill 3.5 triệu tặng Tháp sườn cay, bill 2.5 triệu tặng Bò nướng Siam. Áp dụng tới 15/11, không áp dụng tối thứ 6, 7, Chủ nhật và ngày lễ.",
+  portraitOnly: false,
   endsAt: "2026-11-15T23:59:59+07:00",
   mobile: {
     // Ảnh 9:16 cho điện thoại
@@ -25,20 +27,46 @@ const EVENT = {
   },
 }
 
+/**
+ * Banner chạy đúng 1 ngày 31/10/2026, thay cho sự kiện chính ở cả desktop lẫn mobile.
+ * Chỉ có ảnh 9:16 nên desktop cũng hiển thị dạng dọc. Sau `endsAt` tự quay về MAIN_EVENT.
+ */
+const ONE_DAY_EVENT = {
+  id: "duy-nhat-31-10-giam-50",
+  title: "Duy nhất 31/10 - Giảm 50% Set Lẩu Thái Tom Yum",
+  alt: "Duy nhất 31/10 giảm 50% khi gọi Set Lẩu Thái Tom Yum.",
+  portraitOnly: true,
+  endsAt: "2026-10-31T23:59:59+07:00",
+  mobile: {
+    srcSet: "/images/event/event-31-10-720.webp 720w, /images/event/event-31-10-1080.webp 1080w",
+    src: "/images/event/event-31-10-720.webp",
+  },
+  desktop: {
+    srcSet: "/images/event/event-31-10-720.webp 720w, /images/event/event-31-10-1080.webp 1080w",
+  },
+}
+
+type PopupEvent = typeof MAIN_EVENT
+
+/** Chọn sự kiện đang hiệu lực: banner 1 ngày nếu còn hạn, không thì sự kiện chính; null nếu đã hết hạn hết. */
+function getActiveEvent(): PopupEvent | null {
+  const now = Date.now()
+  return [ONE_DAY_EVENT, MAIN_EVENT].find((event) => now <= new Date(event.endsAt).getTime()) ?? null
+}
+
 const SHOW_AFTER_MS = 5000
 const PRELOAD_AFTER_MS = 1500
-const STORAGE_KEY = `siam-event-popup:${EVENT.id}`
 const DESKTOP_QUERY = "(min-width: 768px)"
 // Chiều rộng popup: vừa màn hình theo cả hai chiều, giữ đúng tỉ lệ ảnh.
 const MOBILE_SIZES = "min(92vw, calc((100svh - 6rem) * 9 / 16))"
 const DESKTOP_SIZES = "min(92vw, 1100px, calc((100svh - 6rem) * 16 / 9))"
 
 /** Tải trước đúng ảnh của thiết bị để lúc popup hiện là ảnh đã sẵn sàng. */
-function preloadImage() {
-  const desktop = window.matchMedia(DESKTOP_QUERY).matches
+function preloadImage(event: PopupEvent) {
+  const desktop = !event.portraitOnly && window.matchMedia(DESKTOP_QUERY).matches
   const img = new window.Image()
   img.sizes = desktop ? DESKTOP_SIZES : MOBILE_SIZES
-  img.srcset = desktop ? EVENT.desktop.srcSet : EVENT.mobile.srcSet
+  img.srcset = desktop ? event.desktop.srcSet : event.mobile.srcSet
 }
 
 const CTA_BASE =
@@ -65,22 +93,26 @@ function Shimmer() {
  */
 export default function EventPopup() {
   const [open, setOpen] = useState(false)
+  const [event, setEvent] = useState<PopupEvent | null>(null)
   const dialogRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (Date.now() > new Date(EVENT.endsAt).getTime()) return
+    const active = getActiveEvent()
+    if (!active) return
+    const storageKey = `siam-event-popup:${active.id}`
     try {
-      if (sessionStorage.getItem(STORAGE_KEY)) return
+      if (sessionStorage.getItem(storageKey)) return
     } catch {
       // Trình duyệt chặn storage: vẫn hiện popup như bình thường.
     }
-    const preload = window.setTimeout(preloadImage, PRELOAD_AFTER_MS)
+    const preload = window.setTimeout(() => preloadImage(active), PRELOAD_AFTER_MS)
     const show = window.setTimeout(() => {
+      setEvent(active)
       setOpen(true)
       try {
-        sessionStorage.setItem(STORAGE_KEY, "1")
+        sessionStorage.setItem(storageKey, "1")
       } catch {}
-      window.dataLayer?.push({ event: "event_popup_view", event_id: EVENT.id })
+      window.dataLayer?.push({ event: "event_popup_view", event_id: active.id })
     }, SHOW_AFTER_MS)
     return () => {
       window.clearTimeout(preload)
@@ -105,10 +137,11 @@ export default function EventPopup() {
   }, [open])
 
   const close = () => setOpen(false)
+  const portraitOnly = event?.portraitOnly ?? false
 
   return (
     <AnimatePresence>
-      {open && (
+      {open && event && (
         <motion.div
           className="fixed inset-0 z-[70] flex items-center justify-center p-4"
           initial={{ opacity: 0 }}
@@ -123,22 +156,26 @@ export default function EventPopup() {
             tabIndex={-1}
             role="dialog"
             aria-modal="true"
-            aria-label={`Ưu đãi: ${EVENT.title}`}
+            aria-label={`Ưu đãi: ${event.title}`}
             // container-type để kích thước nút (đơn vị cqw) co giãn theo đúng bề rộng ảnh.
-            className="relative aspect-[1381/2455] w-[min(92vw,calc((100svh-6rem)*9/16))] overflow-hidden rounded-2xl shadow-[0_30px_80px_-20px_rgba(0,0,0,0.8)] outline-none ring-1 ring-[#D8C48A]/40 [container-type:inline-size] md:aspect-[2455/1381] md:w-[min(92vw,1100px,calc((100svh-6rem)*16/9))]"
+            className={`relative w-[min(92vw,calc((100svh-6rem)*9/16))] overflow-hidden rounded-2xl shadow-[0_30px_80px_-20px_rgba(0,0,0,0.8)] outline-none ring-1 ring-[#D8C48A]/40 [container-type:inline-size] ${
+              portraitOnly
+                ? "aspect-[9/16]"
+                : "aspect-[1381/2455] md:aspect-[2455/1381] md:w-[min(92vw,1100px,calc((100svh-6rem)*16/9))]"
+            }`}
             initial={{ opacity: 0, scale: 0.9, y: 24 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 12 }}
             transition={{ type: "spring", stiffness: 260, damping: 26 }}
           >
             <picture>
-              <source media={DESKTOP_QUERY} srcSet={EVENT.desktop.srcSet} sizes={DESKTOP_SIZES} />
+              {!portraitOnly && <source media={DESKTOP_QUERY} srcSet={event.desktop.srcSet} sizes={DESKTOP_SIZES} />}
               {/* Dùng <picture> để trình duyệt chỉ tải ảnh 9:16 hoặc 16:9 phù hợp với thiết bị */}
               <img
-                src={EVENT.mobile.src}
-                srcSet={EVENT.mobile.srcSet}
+                src={event.mobile.src}
+                srcSet={event.mobile.srcSet}
                 sizes={MOBILE_SIZES}
-                alt={`${EVENT.title}: nhóm 4 khách tặng Bingsu, bill 3.5 triệu tặng Tháp sườn cay, bill 2.5 triệu tặng Bò nướng Siam. Áp dụng tới 15/11, không áp dụng tối thứ 6, 7, Chủ nhật và ngày lễ.`}
+                alt={`${event.title}: ${event.alt}`}
                 className="size-full select-none object-cover"
                 draggable={false}
               />
@@ -148,13 +185,20 @@ export default function EventPopup() {
               type="button"
               onClick={close}
               aria-label="Đóng"
-              className="absolute right-[3%] top-[1.8%] grid size-[max(34px,8cqw)] place-items-center rounded-full bg-black/45 text-white ring-1 ring-white/50 backdrop-blur-sm transition hover:bg-black/65 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white md:right-[1.6%] md:top-[3%] md:size-[max(36px,3cqw)]"
+              className={`absolute right-[3%] top-[1.8%] grid size-[max(34px,8cqw)] place-items-center rounded-full bg-black/45 text-white ring-1 ring-white/50 backdrop-blur-sm transition hover:bg-black/65 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white ${
+                portraitOnly ? "" : "md:right-[1.6%] md:top-[3%] md:size-[max(36px,3cqw)]"
+              }`}
             >
               <X className="size-[55%]" strokeWidth={2.4} />
             </button>
 
             {/* Điện thoại: 2 nút trong dải trống giữa ảnh */}
-            <div className="absolute inset-x-[7%] top-[53.5%] flex -translate-y-1/2 gap-[3cqw] md:hidden">
+            {/* Banner 1 ngày (chỉ có ảnh dọc): nút nằm ở dải trống cuối ảnh, cả desktop lẫn mobile */}
+            <div
+              className={`absolute inset-x-[7%] flex -translate-y-1/2 gap-[3cqw] ${
+                portraitOnly ? "top-[93%]" : "top-[53.5%] md:hidden"
+              }`}
+            >
               <a
                 href={SITE.phoneHref}
                 onClick={() => trackContactClick("hotline", "event-popup")}
@@ -176,7 +220,7 @@ export default function EventPopup() {
             </div>
 
             {/* Máy tính bảng / laptop / desktop: 1 nút, căn giữa theo trục 3 thẻ ưu đãi */}
-            <div className="absolute left-[25.2%] top-[79.5%] hidden -translate-x-1/2 -translate-y-1/2 md:block">
+            <div className={`absolute left-[25.2%] top-[79.5%] hidden -translate-x-1/2 -translate-y-1/2 ${portraitOnly ? "" : "md:block"}`}>
               {/* Vòng sáng lan toả phía sau nút (nút có overflow-hidden cho hiệu ứng ánh kim) */}
               <span aria-hidden="true" className="absolute inset-0 animate-cta-pulse rounded-full bg-[#F1E4B8] motion-reduce:hidden" />
               <a
