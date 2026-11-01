@@ -38,11 +38,11 @@ const ONE_DAY_EVENT = {
   portraitOnly: true,
   endsAt: "2026-10-31T23:59:59+07:00",
   mobile: {
-    srcSet: "/images/event/event-31-10-720.webp 720w, /images/event/event-31-10-1080.webp 1080w",
-    src: "/images/event/event-31-10-720.webp",
+    srcSet: "/images/event/event-november-720.webp 720w, /images/event/event-november-1080.webp 1080w",
+    src: "/images/event/event-november-720.webp",
   },
   desktop: {
-    srcSet: "/images/event/event-31-10-720.webp 720w, /images/event/event-31-10-1080.webp 1080w",
+    srcSet: "/images/event/event-november-720.webp 720w, /images/event/event-november-1080.webp 1080w",
   },
 }
 
