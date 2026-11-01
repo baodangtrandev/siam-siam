@@ -28,21 +28,21 @@ const MAIN_EVENT = {
 }
 
 /**
- * Banner chạy đúng 1 ngày 31/10/2026, thay cho sự kiện chính ở cả desktop lẫn mobile.
+ * Banner Crazy Lunch chạy đến hết 30/11/2026, thay cho sự kiện chính ở cả desktop lẫn mobile.
  * Chỉ có ảnh 9:16 nên desktop cũng hiển thị dạng dọc. Sau `endsAt` tự quay về MAIN_EVENT.
  */
 const ONE_DAY_EVENT = {
-  id: "duy-nhat-31-10-giam-50",
-  title: "Duy nhất 31/10 - Giảm 50% Set Lẩu Thái Tom Yum",
-  alt: "Duy nhất 31/10 giảm 50% khi gọi Set Lẩu Thái Tom Yum.",
+  id: "crazy-lunch-giam-50",
+  title: "Crazy Lunch - Giảm 50% Set Lẩu Thái Tom Yum",
+  alt: "Crazy Lunch giảm 50% khi gọi Set Lẩu Thái Tom Yum, áp dụng khung giờ trưa từ 11h đến 14h.",
   portraitOnly: true,
-  endsAt: "2026-10-31T23:59:59+07:00",
+  endsAt: "2026-11-30T23:59:59+07:00",
   mobile: {
-    srcSet: "/images/event/event-31-10-720.webp 720w, /images/event/event-31-10-1080.webp 1080w",
-    src: "/images/event/event-31-10-720.webp",
+    srcSet: "/images/event/event-november-720.webp 720w, /images/event/event-november-1080.webp 1080w",
+    src: "/images/event/event-november-720.webp",
   },
   desktop: {
-    srcSet: "/images/event/event-31-10-720.webp 720w, /images/event/event-31-10-1080.webp 1080w",
+    srcSet: "/images/event/event-november-720.webp 720w, /images/event/event-november-1080.webp 1080w",
   },
 }
 
